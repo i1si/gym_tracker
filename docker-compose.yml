@@ -1,0 +1,31 @@
+services:
+
+  gt-app:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - './gym_tracker:/gym_tracker'
+    environment:
+      - DJANGO_SECRET=${DJANGO_SECRET}
+      - GT_DB_HOST=${GT_DB_HOST}
+      - GT_DB_NAME=${GT_DB_NAME}
+      - GT_DB_USER=${GT_DB_USER}
+      - GT_DB_PASSWORD=${GT_DB_PASSWORD}
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - gt_database
+  
+  gt_database:
+    image: postgres:16.1-alpine3.19
+    restart: always
+    volumes:
+      - ~/.pg/pg_data/gt_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${GT_DB_NAME}
+      - POSTGRES_USER=${GT_DB_USER}
+      - POSTGRES_PASSWORD=${GT_DB_PASSWORD}
+    ports:
+      - "5432:5432"
