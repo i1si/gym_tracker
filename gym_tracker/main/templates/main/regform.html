@@ -1,0 +1,28 @@
+{% load static %}
+<form class="p-4 p-md-5 border rounded-3 bg-body-tertiary" id="reg_form" method="POST">
+    <h2 class="mb-3">Регистрация</h2>
+    {% csrf_token %}
+    <div class="form-floating mb-3">
+        <input name="username" type="username" class="form-control" id="floatingInput" placeholder="Логин" required>
+        <label for="floatingInput">Логин</label>
+        <div class="invalid-feedback" id="invalid-fbck-usrnm">
+        </div>
+    </div>
+    <div class="form-floating mb-3">
+        <input name="password" type="password" class="form-control" id="floatingPassword" placeholder="Пароль" required>
+        <label for="floatingPassword">Пароль</label>
+    </div>
+    <button class="w-100 btn btn-lg btn-primary" type="submit">Зарегистрироваться</button>
+    <div class="text-center my-3">
+        уже есть аккаунт?
+        <a href="{% url 'login' %}">Войти</a>
+    </div>
+    <hr>
+    <div class="text-center my-3">
+        или войти через Telegram
+    </div>
+    <a href="">
+        <img src="{% static 'main/img/telegram.svg' %}" alt="telegram logo" width="40" class="mx-auto d-block">
+    </a>
+</form>
+<script src="{% static 'main/scripts/register.js' %}"></script>

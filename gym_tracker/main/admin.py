@@ -1,3 +1,29 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
+from django.utils.translation import gettext_lazy as _
 
-# Register your models here.
+from main.models import CustomUser
+
+
+@admin.register(CustomUser)
+class UserAdmin(DjangoUserAdmin):
+    """
+    Admin panel for CustomUser model with no email field
+    """
+
+    fieldsets = (
+        (None, {'fields': ('username',)}),
+        (_('Personal info'), {'fields': ('first_name', 'photo')}),
+        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
+                                      'groups', 'user_permissions')}),
+        (_('Important dates'), {'fields': ('last_login', 'date_joined')})
+    )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'password1', 'password2', 'first_name',),
+        }),
+    )
+    list_display = ('username', 'first_name', 'is_staff')
+    search_fields = ('username', 'first_name')
+    ordering = ('username',)

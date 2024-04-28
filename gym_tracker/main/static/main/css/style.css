@@ -1,3 +1,7 @@
 .nav-user-avatar {
     border-radius: 100%;
 }
+
+.invld-fdbck {
+    color: #ea868f;
+}

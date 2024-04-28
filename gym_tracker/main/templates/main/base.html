@@ -19,8 +19,8 @@
 <body>
 	<header>
 		<nav class="navbar navbar-expand-sm fixed-top bg-body-tertiary">
-			<div class="container-fluid">
-				<a class="navbar-brand" href="">
+			<div class="container">
+				<a class="navbar-brand" href="{% url 'main' %}">
 					<img src="{% static 'main/img/logo.svg' %}" alt="logo" width="30" height="24"
 						class="d-inline-block align-text-top">
 					tracker
@@ -28,34 +28,45 @@
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
 					aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
-					<img class="nav-user-avatar" src="{% static 'main/img/testava.jpg' %}" alt="avatar" width="40">
+					{% if request.user.is_authenticated %}
+						<img src="{{ request.user.photo.url }}" alt="user photo" class="nav-user-avatar" width="30">
+					{% else %}
+						<img class="nav-user-avatar" src="{% static 'main/img/nophoto.jpg' %}" alt="user photo" width="30">
+					{% endif %}
 				</button>
 				<div class="collapse navbar-collapse" id="navbarNav">
 					<ul class="navbar-nav me-auto">
-
-						<a class="nav-link dropdown-toggle" href="" role="button" data-bs-toggle="dropdown">
-							Профиль
-						</a>
-						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="">Войти</a></li>
-							<li><a class="dropdown-item" href="">Зарегистрироваться</a></li>
-						</ul>
-						
 						<li class="nav-item">
-							<a class="nav-link active" href="">Тренировка</a>
+							<a class="nav-link" href="{% url 'training' %}">Тренировка</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="">Прогресс</a>
+							<a class="nav-link" href="{% url 'progress' %}">Прогресс</a>
 						</li>
 					</ul>
+					<div class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="" role="button" data-bs-toggle="dropdown">
+							{% if request.user.is_authenticated %}
+								{{ request.user.username }}
+							{% else %}
+								Профиль
+							{% endif %}
+						</a>
+						<ul class="dropdown-menu">
+							{% if request.user.is_authenticated %}
+								<li><a class="dropdown-item" href="">Профиль</a></li>
+								<li><a class="dropdown-item" href="{% url 'logout' %}">Выйти</a></li>
+							{% else %}
+								<li><a class="dropdown-item" href="{% url 'login' %}">Войти</a></li>
+								<li><a class="dropdown-item" href="{% url 'register' %}">Зарегистрироваться</a></li>
+							{% endif %}
+						</ul>
+					</div>
 				</div>
 			</div>
 		</nav>
 	</header>
-
-	{% block content %}
-	{% endblock content %}
-
+		{% block content %}
+		{% endblock content %}
 </body>
 
 </html>
