@@ -24,9 +24,11 @@ class UserInfoViewSet(CreateModelMixin, GenericViewSet):
         login(request, user)
         return response
 
+from time import sleep
 
 @api_view(["POST"])
 def login_view(request):
+    sleep(2)
     user = authenticate(username=request.POST['username'], password=request.POST['password'])
     if user:
         login(request, user)

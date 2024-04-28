@@ -37,10 +37,10 @@
 				<div class="collapse navbar-collapse" id="navbarNav">
 					<ul class="navbar-nav me-auto">
 						<li class="nav-item">
-							<a class="nav-link" href="{% url 'training' %}">Тренировка</a>
+							<a class="nav-link {% block training_c %}{% endblock training_c %}" href="{% url 'training' %}">Тренировка</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="{% url 'progress' %}">Прогресс</a>
+							<a class="nav-link {% block progress_c %}{% endblock progress_c %}" href="{% url 'progress' %}">Прогресс</a>
 						</li>
 					</ul>
 					<div class="nav-item dropdown">

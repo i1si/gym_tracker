@@ -1,5 +1,5 @@
 function serializeForm(formNode) {
-  return new FormData(formNode)
+	return new FormData(formNode)
 }
 
 async function sendData(data) {
@@ -10,18 +10,23 @@ async function sendData(data) {
 }
 
 async function handleFormSubmit(event) {
-  event.preventDefault()
-  const data = serializeForm(applicantForm)
-  const response = await sendData(data)
-  if (response.ok) {
+	event.preventDefault()
+	const spinner = document.getElementById("spnr");
+	spinner.classList.remove("visually-hidden");
+	button = document.getElementById("lgn-btn").disabled = true;
+	const data = serializeForm(applicantForm)
+	const response = await sendData(data)
+	if (response.ok) {
 		location.reload()
 	} else {
 		await response.json()
-		.then (err => {
-			document.getElementById("floatingInput").classList.add("is-invalid")
-			document.getElementById("invalid-fbck-usrnm").innerHTML = err["username"][0]
-		})
+			.then(err => {
+				document.getElementById("floatingInput").classList.add("is-invalid")
+				document.getElementById("invalid-fbck-usrnm").innerHTML = err["username"][0]
+			})
 	}
+	spinner.classList.add("visually-hidden");
+	button = document.getElementById("lgn-btn").disabled = false;
 }
 
 const applicantForm = document.getElementById('reg_form')

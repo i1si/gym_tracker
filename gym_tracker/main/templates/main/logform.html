@@ -1,27 +1,32 @@
 {% load static %}
 <form class="p-4 p-md-5 border rounded-3 bg-body-tertiary" id="reg_form" method="POST">
-    <h2 class="mb-3">Вход</h2>
-    {% csrf_token %}
-    <div class="form-floating mb-3">
-        <input name="username" type="username" class="form-control" id="floatingInput" placeholder="Логин" required>
-        <label for="floatingInput">Логин</label>
-    </div>
-    <div class="form-floating mb-3">
-        <input name="password" type="password" class="form-control" id="floatingPassword" placeholder="Пароль" required>
-        <label for="floatingPassword">Пароль</label>
-    </div>
-    <button class="w-100 btn btn-lg btn-primary" type="submit">Войти</button>
-    <div class="invld-fdbck my-2 text-center" id="invalid-fbck-usrnm"></div>
-    <div class="text-center my-3">
-        еще нет аккаунта?
-        <a href="{% url 'register' %}">Зарегистрироваться</a>
-    </div>
-    <hr>
-    <div class="text-center my-3">
-        или войти через Telegram
-    </div>
-    <a href="">
-        <img src="{% static 'main/img/telegram.svg' %}" alt="telegram logo" width="40" class="mx-auto d-block">
-    </a>
+	<h2 class="mb-3">Вход</h2>
+	{% csrf_token %}
+	<div class="form-floating mb-3">
+		<input name="username" type="username" class="form-control" id="floatingInput" placeholder="Логин" required>
+		<label for="floatingInput">Логин</label>
+	</div>
+	<div class="form-floating mb-3">
+		<input name="password" type="password" class="form-control" id="floatingPassword" placeholder="Пароль" required>
+		<label for="floatingPassword">Пароль</label>
+	</div>
+	<button class="w-100 btn btn-lg btn-primary" type="submit" id="lgn-btn">
+		<span class="spinner-border spinner-border-sm visually-hidden" id="spnr" aria-hidden="true"></span>
+		<span role="status">
+			Войти
+		</span>
+	</button>
+	<div class="invld-fdbck my-2 text-center" id="invalid-fbck-usrnm"></div>
+	<div class="text-center my-3">
+		еще нет аккаунта?
+		<a href="{% url 'register' %}">Зарегистрироваться</a>
+	</div>
+	<hr>
+	<div class="text-center my-3">
+		или войти через Telegram
+	</div>
+	<a href="">
+		<img src="{% static 'main/img/telegram.svg' %}" alt="telegram logo" width="40" class="mx-auto d-block">
+	</a>
 </form>
 <script src="{% static 'main/scripts/login.js' %}"></script>
