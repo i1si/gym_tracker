@@ -13,10 +13,97 @@ active
 <main class="container col-xl-10 col-xxl-8 px-4 py-5">
 	<div class="row align-items-center justify-content-center g-lg-5 py-5">
 		<div class="col-lg-7 text-center">
-			<h1 class="display-4 fw-bold lh-1 text-body-emphasis mb-3">Начать тренировку</h1>
-			<p class="col-lg-10 fs-4">
-				а
-			</p>
+			<h1 class="display-4 fw-bold lh-1 text-body-emphasis mb-4">Начать тренировку</h1>
+			<ul class="list-group" id="training_list">
+				<button disabled class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+					<div class="text-start placeholder-glow col-5 col-md-3">
+						<span class="fw-bold placeholder col-12">
+						</span>
+					</div>
+					<span class="badge text-bg-primary rounded-pill col-3 col-md-2">
+						<span class="placeholder"></span>
+					</span>
+				</button>
+				<button disabled class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+					<div class="text-start placeholder-glow col-5 col-md-3">
+						<span class="fw-bold placeholder col-12">
+						</span>
+					</div>
+					<span class="badge text-bg-primary rounded-pill col-3 col-md-2">
+						<span class="placeholder"></span>
+					</span>
+				</button>
+				<button disabled class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+					<div class="text-start placeholder-glow col-5 col-md-3">
+						<span class="fw-bold placeholder col-12">
+						</span>
+					</div>
+					<span class="badge text-bg-primary rounded-pill col-3 col-md-2">
+						<span class="placeholder"></span>
+					</span>
+				</button>
+				<button class="list-group-item placeholder disabled" id="add-t-btn">
+					<div>
+						<img src="{% static 'main/img/plus.svg' %}" />
+						Добавить
+					</div>
+				</button>
+			</ul>
+			<script src="{% static 'main/scripts/mainTrainings.js' %}"></script>
+
+			<div class="modal fade" id="addTraining" tabindex="-1" aria-labelledby="addTrainingLabel" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h1 class="modal-title fs-5" id="addTrainingLabel">Добавить тренировку</h1>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+
+							<form class="p-4 p-md-5">
+								{% csrf_token %}
+								<div class="mb-3">
+									<input name="training-name" type="text" class="form-control" placeholder="Название тренировки"
+										required>
+								</div>
+
+								<h4>Упражнения</h2>
+									<ol class="list-group list-group-numbered">
+										<li class="list-group-item d-flex align-items-center p-0 ps-3">
+											<div class="ms-2 w-100">
+												<input type="text" class="form-control border-0" placeholder="Название">
+											</div>
+										</li>
+										<li class="list-group-item d-flex align-items-center p-0 ps-3">
+											<div class="ms-2 w-100">
+												<input type="text" class="form-control border-0" placeholder="Название">
+											</div>
+										</li>
+										<li class="list-group-item d-flex align-items-center p-0 ps-3">
+											<div class="ms-2 w-100">
+												<input type="text" class="form-control border-0" placeholder="Название">
+											</div>
+										</li>
+										<button type="button"
+											class="list-group-item list-group-item-action list-group-item-light d-flex align-items-center p-1 ps-3">
+											<div class="w-100">
+												<img src="{% static 'main/img/plus.svg' %}">
+												Добавить
+											</div>
+										</button>
+									</ol>
+
+							</form>
+
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+							<button type="button" class="btn btn-primary">Добавить</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
 		</div>
 	</div>
 </main>

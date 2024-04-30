@@ -48,3 +48,71 @@ class CustomUser(AbstractUser):
     photo = models.ImageField('Изображение профиля', upload_to='avatars', default='avatars/nophoto.jpg')
     REQUIRED_FIELDS = []
     objects = UserManager()
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
+
+class Training(models.Model):
+    """
+    Training session model.
+    """
+    name = models.CharField('Название', max_length=40)
+    owner = models.ForeignKey(to=CustomUser, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Тренировка'
+        verbose_name_plural = 'Тренировки'
+    
+    def __str__(self) -> str:
+        return f'{self.owner.first_name} - {self.name}'
+
+
+class Exercise(models.Model):
+    """
+    The exercise model of a training.
+    """
+    name = models.CharField('Название', max_length=40)
+    training = models.ForeignKey(to=Training, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Упражнение'
+        verbose_name_plural = 'Упражнения'
+    
+    def __str__(self) -> str:
+        return f'{self.name} - {self.training.name}'
+
+
+class FinishedTraining(models.Model):
+    """
+    Training session start and end times model.
+    """
+    training = models.ForeignKey(to=Training, on_delete=models.CASCADE, related_name='finished_trainings')
+    started_at = models.DateTimeField('Старт')
+    finished_at = models.DateTimeField('Финиш')
+
+    class Meta:
+        verbose_name = 'Выполненная тренировка'
+        verbose_name_plural = 'Выполненные тренировки'
+        ordering = ('-started_at', )
+
+    
+    def __str__(self) -> str:
+        return f'{self.training.name} - {self.started_at}-{self.finished_at}'
+
+
+class FinishedExerciseSet(models.Model):
+    """
+    Completed exercise set stats.
+    """
+    training = models.ForeignKey(to=FinishedTraining, on_delete=models.CASCADE)
+    exercise = models.ForeignKey(to=Exercise, on_delete=models.CASCADE)
+    set = models.PositiveSmallIntegerField('Подход')
+    weight = models.PositiveSmallIntegerField('Вес', null=True)
+    repetitions = models.PositiveSmallIntegerField('Повторений')
+
+    class Meta:
+        verbose_name = 'Выполненный подход'
+        verbose_name_plural = 'Выполненные подходы'
+

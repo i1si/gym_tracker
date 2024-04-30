@@ -2,8 +2,13 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import gettext_lazy as _
 
-from main.models import CustomUser
+from main.models import CustomUser, Training, FinishedTraining, Exercise, FinishedExerciseSet
 
+
+admin.site.register(Training)
+admin.site.register(FinishedTraining)
+admin.site.register(Exercise)
+admin.site.register(FinishedExerciseSet)
 
 @admin.register(CustomUser)
 class UserAdmin(DjangoUserAdmin):

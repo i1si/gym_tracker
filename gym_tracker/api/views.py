@@ -10,8 +10,8 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
-from main.models import CustomUser
-from api.serializers import UserSerializer
+from api.serializers import UserSerializer, TrainingSerializer, FinishedTrainingSerializer
+from main.models import CustomUser, Training, FinishedTraining
 
 
 class UserInfoViewSet(CreateModelMixin, GenericViewSet):
@@ -24,13 +24,34 @@ class UserInfoViewSet(CreateModelMixin, GenericViewSet):
         login(request, user)
         return response
 
-from time import sleep
 
 @api_view(["POST"])
 def login_view(request):
-    sleep(2)
     user = authenticate(username=request.POST['username'], password=request.POST['password'])
     if user:
         login(request, user)
         return Response({"success": True}, status=status.HTTP_200_OK)
     return Response({"success": False, "err": "Неверный логин или пароль"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class TrainingViewSet(CreateModelMixin, ListModelMixin, GenericViewSet):
+    serializer_class = TrainingSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def get_queryset(self):
+        queryset = Training.objects.filter(owner=self.request.user).order_by('id')
+        return queryset
+
+
+class FinishedTrainingSet(CreateModelMixin, ListModelMixin, GenericViewSet):
+    serializer_class = FinishedTrainingSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def get_queryset(self):
+        if self.request.query_params.get('last', None):
+            queryset = FinishedTraining.objects.filter(
+                training__owner=self.request.user
+            ).order_by('training', '-started_at').distinct('training')
+        else:
+            queryset = FinishedTraining.objects.filter(training__owner=self.request.user)
+        return queryset
