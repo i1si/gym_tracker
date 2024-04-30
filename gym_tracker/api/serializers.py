@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from main.models import CustomUser, FinishedTraining, Training
+from main.models import CustomUser, Exercise, Training
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -21,13 +21,6 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
-class FinishedTrainingSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = FinishedTraining
-        fields = ('started_at', 'finished_at', )
-
-
 class TrainingSerializer(serializers.ModelSerializer):
     finished_trainings = serializers.SerializerMethodField()
 
@@ -39,3 +32,18 @@ class TrainingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Training
         fields = ('id', 'name', 'finished_trainings')
+
+
+class NewExerciseSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Exercise
+        fields = ('name', )
+
+
+class NewTrainingSerializer(serializers.ModelSerializer):
+    exercises = NewExerciseSerializer(many=True)
+
+    class Meta:
+        model = Training
+        fields = ('name', 'exercises', )

@@ -74,7 +74,7 @@ class Exercise(models.Model):
     The exercise model of a training.
     """
     name = models.CharField('Название', max_length=40)
-    training = models.ForeignKey(to=Training, on_delete=models.CASCADE)
+    training = models.ForeignKey(to=Training, on_delete=models.CASCADE, related_name='exercises')
 
     class Meta:
         verbose_name = 'Упражнение'
