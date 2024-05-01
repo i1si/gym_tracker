@@ -40,7 +40,7 @@ class TrainingViewSet(ViewSet):
 
     def list(self, request):
         queryset = Training.objects.filter(owner=self.request.user).order_by('id')
-        serializer = NewTrainingSerializer(queryset, many=True)
+        serializer = TrainingSerializer(queryset, many=True)
         return Response(serializer.data)
     
     def create(self, request):

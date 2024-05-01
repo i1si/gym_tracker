@@ -22,12 +22,14 @@ const btnTemplate =
 	</button>
 	`
 
-fetch(document.location.origin + '/api/v1/trainings/')
+function getTrainings() {
+	fetch(document.location.origin + '/api/v1/trainings/')
 	.then(res => res.json())
 	.then(data => {
 		displayTrainings(data)
 	})
-
+}
+	
 function displayTrainings(trainings_json) {
 	var trainingList = document.getElementById('training_list')
 	if (trainings_json.length) {
@@ -83,3 +85,5 @@ function getDaysTitle(count) {
     title = declination(count, [' день назад', ' дня назад', ' дней назад']);
     return count + title;
 }
+
+getTrainings()
