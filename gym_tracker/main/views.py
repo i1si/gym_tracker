@@ -1,6 +1,8 @@
 from django.contrib.auth import logout
 from django.shortcuts import redirect, render
 
+from main.models import Training
+
 
 def index_view(request):
     if request.user.is_authenticated:
@@ -32,7 +34,14 @@ def progress_view(request):
     return redirect('login')
 
 
-def training_view(request):
+def trainings_view(request):
     if request.user.is_authenticated:
-        return render(request, 'main/training.html')
+        return render(request, 'main/trainings.html')
     return redirect('login')
+
+
+def training_view(request, training_id):
+    training = Training.objects.get(pk=training_id)
+    if request.user == training.owner:
+        return render(request, 'main/training.html')
+    return redirect('trainings')

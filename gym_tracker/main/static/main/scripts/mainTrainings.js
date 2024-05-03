@@ -46,17 +46,17 @@ function displayTrainings(trainings_json) {
 			} else {
 				var lastTraining = 'никогда'
 			}
+			const trainingUrl = document.location.origin + '/trainings/' + list['id']
 			const trainingTemplate =
 				`
-				<button
-					class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+				<a href="${trainingUrl}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
 					<div class="text-start">
 						<div class="fw-bold">
 							${trainingName}
 						</div>
 					</div>
 					<span class="badge text-bg-primary rounded-pill">${lastTraining}</span>
-				</button>
+				</a>
 				`
 			return trainingTemplate
 		})

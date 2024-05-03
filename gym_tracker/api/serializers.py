@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from main.models import CustomUser, Exercise, Training
+from main.models import CustomUser, Exercise, FinishedExerciseSet, Training
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -47,3 +47,16 @@ class NewTrainingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Training
         fields = ('name', 'exercises', )
+
+
+class FinishedExerciseSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = FinishedExerciseSet
+        fields = ('set', 'weight', 'repetitions', )
+
+
+class NewFinishedExerciseSerializer(serializers.Serializer):
+    training_id = serializers.IntegerField()
+    exercise_id = serializers.IntegerField()
+    finished_exercises = FinishedExerciseSerializer(many=True)

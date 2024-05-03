@@ -10,6 +10,7 @@ urlpatterns = [
     path('users/register/', v.register_view, name='register'),    
     path('users/logout/', v.logout_view, name='logout'),
     path('users/login/', v.login_view, name='login'),
-    path('training/', v.training_view, name='training'),
     path('progress/', v.progress_view, name='progress'),
+    path('trainings/', v.trainings_view, name='trainings'),
+    path('trainings/<int:training_id>', v.training_view, name='training'),
 ]

@@ -41,5 +41,17 @@ async function handleFormSubmit(event) {
     document.getElementById("add-trn-btn").disabled = false;
 }
 
+function addExerciseInput() {
+    const exerciseTemplate = 
+        `
+        <li class="list-group-item d-flex align-items-center p-0 ps-3">
+            <div class="ms-2 w-100">
+                <input name="exr-name" type="text" class="form-control border-0" placeholder="Название">
+            </div>
+        </li>
+        `
+    document.getElementById("add-exrc-btn").insertAdjacentHTML('beforebegin', exerciseTemplate);
+}
+
 const trainingForm = document.getElementById('add-t-form');
 trainingForm.addEventListener('submit', handleFormSubmit);

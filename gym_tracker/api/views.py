@@ -11,8 +11,8 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 
-from api.serializers import NewTrainingSerializer, TrainingSerializer, UserSerializer
-from main.models import CustomUser, Training, FinishedTraining, Exercise
+from api.serializers import NewFinishedExerciseSerializer, NewTrainingSerializer, TrainingSerializer, UserSerializer
+from main.models import CustomUser, FinishedExerciseSet, Training, FinishedTraining, Exercise
 
 
 class UserInfoViewSet(CreateModelMixin, GenericViewSet):
@@ -60,6 +60,32 @@ class TrainingViewSet(ViewSet):
             return {'Location': str(data[api_settings.URL_FIELD_NAME])}
         except (TypeError, KeyError):
             return {}
+
+
+class FinishedExerciseViewSet(ViewSet):
+    permission_classes (IsAuthenticated, )
+
+    def create(self, request):
+        serializer = NewFinishedExerciseSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
+    def perform_create(self, serializer):
+        finished_training, created = FinishedTraining.objects.get_or_create(training_id=serializer.validated_data['training_id'])
+        exercise = Exercise.objects.get(pk=serializer.validated_data['exercise_id'])
+        for finished_exercise in serializer.validated_data['finished_exercises']:
+            FinishedExerciseSet.objects.create(training=finished_training, exercise=exercise, **finished_exercise)
+
+    def get_success_headers(self, data):
+        try:
+            return {'Location': str(data[api_settings.URL_FIELD_NAME])}
+        except (TypeError, KeyError):
+            return {}
+    
+    def retrieve(self, request):
+        ...
 
 
 # class FinishedTrainingSet(CreateModelMixin, ListModelMixin, GenericViewSet):

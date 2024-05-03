@@ -89,8 +89,8 @@ class FinishedTraining(models.Model):
     Training session start and end times model.
     """
     training = models.ForeignKey(to=Training, on_delete=models.CASCADE, related_name='finished_trainings')
-    started_at = models.DateTimeField('Старт')
-    finished_at = models.DateTimeField('Финиш')
+    started_at = models.DateTimeField('Старт', auto_now=True)
+    finished_at = models.DateTimeField('Финиш', blank=True, null=True)
 
     class Meta:
         verbose_name = 'Выполненная тренировка'
