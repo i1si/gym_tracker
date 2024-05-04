@@ -1,17 +1,14 @@
 from django.contrib.auth import authenticate, login
-from django.shortcuts import render
-from django.shortcuts import get_object_or_404, redirect, render
-from django.db.models import F, Func, Q
-from django.db.models.functions import ExtractYear
-from rest_framework import status, viewsets
+from django.utils import timezone
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin, ListModelMixin, CreateModelMixin
+from rest_framework.mixins import CreateModelMixin
 from rest_framework.viewsets import ViewSet, GenericViewSet
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 
-from api.serializers import NewFinishedExerciseSerializer, NewTrainingSerializer, TrainingSerializer, UserSerializer
+from api.serializers import ExerciseQueryParamsParser, NewFinishedExerciseSerializer, NewTrainingSerializer, TrainingSerializer, UserSerializer
 from main.models import CustomUser, FinishedExerciseSet, Training, FinishedTraining, Exercise
 
 
@@ -73,10 +70,17 @@ class FinishedExerciseViewSet(ViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
     def perform_create(self, serializer):
-        finished_training, created = FinishedTraining.objects.get_or_create(training_id=serializer.validated_data['training_id'])
+        finished_training, created = FinishedTraining.objects.get_or_create(training_id=serializer.validated_data['training_id'], finished_at=None)
+        if created:
+            finished_training.started_at = timezone.now()
+            finished_training.save()
         exercise = Exercise.objects.get(pk=serializer.validated_data['exercise_id'])
-        for finished_exercise in serializer.validated_data['finished_exercises']:
-            FinishedExerciseSet.objects.create(training=finished_training, exercise=exercise, **finished_exercise)
+        last_exercise = Exercise.objects.filter(training_id=serializer.validated_data['training_id']).last()
+        if exercise.id == last_exercise.id:
+            finished_training.finished_at = timezone.now()
+            finished_training.save()
+        for finished_set in serializer.validated_data['finished_sets']:
+            FinishedExerciseSet.objects.create(training=finished_training, exercise=exercise, **finished_set)
 
     def get_success_headers(self, data):
         try:
@@ -84,19 +88,23 @@ class FinishedExerciseViewSet(ViewSet):
         except (TypeError, KeyError):
             return {}
     
-    def retrieve(self, request):
-        ...
-
-
-# class FinishedTrainingSet(CreateModelMixin, ListModelMixin, GenericViewSet):
-#     serializer_class = FinishedTrainingSerializer
-#     permission_classes = (IsAuthenticated, )
-
-#     def get_queryset(self):
-#         if self.request.query_params.get('last', None):
-#             queryset = FinishedTraining.objects.filter(
-#                 training__owner=self.request.user
-#             ).order_by('training', '-started_at').distinct('training')
-#         else:
-#             queryset = FinishedTraining.objects.filter(training__owner=self.request.user)
-#         return queryset
+    def list(self, request):
+        """
+        If eID is provided, return the exercise next in order after the eID.
+        Return the first exercise for training by tID otherwise.
+        """
+        serializer = ExerciseQueryParamsParser(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+        if 'eID' in serializer.validated_data:
+            exercise = Exercise.objects.filter(
+                id__gt=serializer.validated_data['eID'], training_id=serializer.validated_data['tID']
+            ).first()
+        else:
+            exercise = Exercise.objects.filter(training_id=serializer.validated_data['tID']).first()
+        if not exercise:
+            return Response({'next': False})
+        return Response({
+            'next': True,
+            'id': exercise.id, 
+            'name': exercise.name
+        })

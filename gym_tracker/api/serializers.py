@@ -59,4 +59,9 @@ class FinishedExerciseSerializer(serializers.ModelSerializer):
 class NewFinishedExerciseSerializer(serializers.Serializer):
     training_id = serializers.IntegerField()
     exercise_id = serializers.IntegerField()
-    finished_exercises = FinishedExerciseSerializer(many=True)
+    finished_sets = FinishedExerciseSerializer(many=True)
+
+
+class ExerciseQueryParamsParser(serializers.Serializer):
+    tID = serializers.IntegerField()
+    eID = serializers.IntegerField(required=False)

@@ -36,12 +36,13 @@ def progress_view(request):
 
 def trainings_view(request):
     if request.user.is_authenticated:
-        return render(request, 'main/trainings.html')
+        success = request.GET.get('f', None)
+        return render(request, 'main/trainings.html', {'success': success})
     return redirect('login')
 
 
 def training_view(request, training_id):
     training = Training.objects.get(pk=training_id)
     if request.user == training.owner:
-        return render(request, 'main/training.html')
+        return render(request, 'main/training.html', {'training': training})
     return redirect('trainings')
