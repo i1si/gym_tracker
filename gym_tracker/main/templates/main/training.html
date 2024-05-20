@@ -18,32 +18,9 @@ active
 				<span class="placeholder col-6"></span>
 			</p>
 			{% csrf_token %}
-			<ol class="list-group list-group-numbered">
-				<li class="list-group-item d-flex align-items-center p-0 ps-3">
-					<div class="ms-2 w-100">
-						<div class="input-group">
-							<input name="set-weight" type="text" class="form-control form-control-lg border-0" placeholder="Вес">
-							<input name="set-repeats" type="text" class="form-control form-control-lg border-0 border-start" placeholder="Повторений">
-						</div>
-					</div>
-				</li>
-				<li class="list-group-item d-flex align-items-center p-0 ps-3">
-					<div class="ms-2 w-100">
-						<div class="input-group">
-							<input name="set-weight" type="text" class="form-control form-control-lg border-0" placeholder="Вес">
-							<input name="set-repeats" type="text" class="form-control form-control-lg border-0 border-start" placeholder="Повторений">
-						</div>
-					</div>
-				</li>
-				<li class="list-group-item d-flex align-items-center p-0 ps-3">
-					<div class="ms-2 w-100">
-						<div class="input-group">
-							<input name="set-weight" type="text" class="form-control form-control-lg border-0" placeholder="Вес">
-							<input name="set-repeats" type="text" class="form-control form-control-lg border-0 border-start" placeholder="Повторений">
-						</div>
-					</div>
-				</li>
-				<button type="button" onclick="addSetInput()" id="add-set-btn" class="disabled list-group-item list-group-item-action list-group-item-light d-flex align-items-center p-1 ps-3">
+			<ol class="list-group list-group-numbered" id="exrcs">
+				<button type="button" onclick="addSetInput()" id="add-set-btn"
+					class="disabled list-group-item list-group-item-action list-group-item-light d-flex align-items-center p-1 ps-3">
 					<div class="w-100 text-center">
 						<img src="{% static 'main/img/plus.svg' %}">
 						Добавить
@@ -53,7 +30,8 @@ active
 			<script src="{% static 'main/scripts/exercise.js' %}" tID="{{ training.id }}"></script>
 			<div class="mt-3 d-flex justify-content-between">
 				<button type="button" class="btn btn-outline-danger disabled" id="exrc-fnsh-btn">Завершить</button>
-				<button type="button" class="btn btn-primary disabled" id="exrc-next-btn" onclick="nextExercise()">Следующее упражнение</button>
+				<button type="button" class="btn btn-primary disabled" id="exrc-next-btn" onclick="nextExercise()">Следующее
+					упражнение</button>
 			</div>
 		</div>
 	</div>

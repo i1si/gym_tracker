@@ -70,7 +70,9 @@ class FinishedExerciseViewSet(ViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
     def perform_create(self, serializer):
-        finished_training, created = FinishedTraining.objects.get_or_create(training_id=serializer.validated_data['training_id'], finished_at=None)
+        finished_training, created = FinishedTraining.objects.get_or_create(
+            training_id=serializer.validated_data['training_id'], finished_at=None
+        )
         if created:
             finished_training.started_at = timezone.now()
             finished_training.save()
@@ -103,8 +105,13 @@ class FinishedExerciseViewSet(ViewSet):
             exercise = Exercise.objects.filter(training_id=serializer.validated_data['tID']).first()
         if not exercise:
             return Response({'next': False})
+        last_finished_training = FinishedTraining.objects.filter(training_id=serializer.validated_data['tID']).first()
+        last_finished_exercise_sets = FinishedExerciseSet.objects.filter(training=last_finished_training, exercise=exercise).all()
         return Response({
             'next': True,
             'id': exercise.id, 
-            'name': exercise.name
+            'name': exercise.name,
+            'sets': [
+                {'set': x.set, 'weight': x.weight, 'repetitions': x.repetitions} for x in last_finished_exercise_sets
+            ]
         })
