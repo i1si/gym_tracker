@@ -5,3 +5,31 @@
 .invld-fdbck {
     color: #ea868f;
 }
+
+.calfield {
+    max-width: 100px !important;
+}
+
+.calspace {
+    height: 10px;
+}
+
+.field-succ {
+    background-color: darkseagreen !important;
+}
+
+.field-inactive {
+    background-color: rgba(188, 188, 188, 0.159) !important;
+}
+
+#cal-month {
+    margin-bottom: 0 !important;
+}
+
+#cal-month::first-letter {
+    text-transform: capitalize;
+}
+
+.hover-action:hover {
+    background-color: rgb(43, 48, 53);
+}

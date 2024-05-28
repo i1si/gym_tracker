@@ -10,7 +10,36 @@ active
 {% endblock progress_c %}
 
 {% block content %}
-	<main>
-		pupu
-	</main>
+<main class="container col-md-7 col-lg-6 col-xl-5 col-xxl-4 px-4 py-5">
+	<div class="row my-5 justify-content-center">
+		<div class="mb-1 d-flex align-items-center justify-content-between">
+			<div class="hover-action px-3 rounded" onclick="prev()">
+				<svg xmlns="http://www.w3.org/2000/svg" height="33px" viewBox="0 -960 960 960" width="33px" fill="#5f6368"><path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"/></svg>
+			</div>
+			<div class="h2 text-center" id="cal-month"></div>
+			<div class="hover-action px-3 rounded" onclick="forw()">
+				<svg xmlns="http://www.w3.org/2000/svg" height="33px" viewBox="0 -960 960 960" width="33px" fill="#5f6368"><path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z"/></svg>
+			</div>
+		</div>
+		<input type="hidden" id="moffset" value="0">
+		<table class="table table-bordered">
+			<thead class="table-light">
+				<tr>
+					<th class="border border-light text-center">Пн</th>
+					<th class="border border-light text-center">Вт</th>
+					<th class="border border-light text-center">Ср</th>
+					<th class="border border-light text-center">Чт</th>
+					<th class="border border-light text-center">Пт</th>
+					<th class="border border-light text-center">Сб</th>
+					<th class="border border-light text-center">Вс</th>
+				</tr>
+			</thead>
+
+			<tbody id="cal">
+			</tbody>
+		</table>
+		<script src="{% static 'main/scripts/calendar.js' %}"></script>
+
+	</div>
+</main>
 {% endblock content %}

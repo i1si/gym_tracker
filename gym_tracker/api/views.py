@@ -8,13 +8,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 
-from api.serializers import ExerciseQueryParamsParser, NewFinishedExerciseSerializer, NewTrainingSerializer, TrainingSerializer, UserSerializer
-from main.models import CustomUser, FinishedExerciseSet, Training, FinishedTraining, Exercise
+import api.serializers as api_s
+import main.models as main_m
 
 
 class UserInfoViewSet(CreateModelMixin, GenericViewSet):
-    queryset = CustomUser.objects.all()
-    serializer_class = UserSerializer
+    queryset = main_m.CustomUser.objects.all()
+    serializer_class = api_s.UserSerializer
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, args, kwargs)
@@ -36,21 +36,21 @@ class TrainingViewSet(ViewSet):
     permission_classes = (IsAuthenticated, )
 
     def list(self, request):
-        queryset = Training.objects.filter(owner=self.request.user).order_by('id')
-        serializer = TrainingSerializer(queryset, many=True)
+        queryset = main_m.Training.objects.filter(owner=self.request.user).order_by('id')
+        serializer = api_s.TrainingSerializer(queryset, many=True)
         return Response(serializer.data)
     
     def create(self, request):
-        serializer = NewTrainingSerializer(data=request.data)
+        serializer = api_s.NewTrainingSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
-        training = Training.objects.create(name=serializer.validated_data['name'], owner=self.request.user)
+        training = main_m.Training.objects.create(name=serializer.validated_data['name'], owner=self.request.user)
         for exercise in serializer.validated_data['exercises']:
-            Exercise.objects.create(name=exercise['name'], training=training)
+            main_m.Exercise.objects.create(name=exercise['name'], training=training)
 
     def get_success_headers(self, data):
         try:
@@ -60,29 +60,29 @@ class TrainingViewSet(ViewSet):
 
 
 class FinishedExerciseViewSet(ViewSet):
-    permission_classes (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
 
     def create(self, request):
-        serializer = NewFinishedExerciseSerializer(data=request.data)
+        serializer = api_s.NewFinishedExerciseSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
     def perform_create(self, serializer):
-        finished_training, created = FinishedTraining.objects.get_or_create(
+        finished_training, created = main_m.FinishedTraining.objects.get_or_create(
             training_id=serializer.validated_data['training_id'], finished_at=None
         )
         if created:
             finished_training.started_at = timezone.now()
             finished_training.save()
-        exercise = Exercise.objects.get(pk=serializer.validated_data['exercise_id'])
-        last_exercise = Exercise.objects.filter(training_id=serializer.validated_data['training_id']).last()
+        exercise = main_m.Exercise.objects.get(pk=serializer.validated_data['exercise_id'])
+        last_exercise = main_m.Exercise.objects.filter(training_id=serializer.validated_data['training_id']).last()
         if exercise.id == last_exercise.id:
             finished_training.finished_at = timezone.now()
             finished_training.save()
         for finished_set in serializer.validated_data['finished_sets']:
-            FinishedExerciseSet.objects.create(training=finished_training, exercise=exercise, **finished_set)
+            main_m.FinishedExerciseSet.objects.create(training=finished_training, exercise=exercise, **finished_set)
 
     def get_success_headers(self, data):
         try:
@@ -95,18 +95,18 @@ class FinishedExerciseViewSet(ViewSet):
         If eID is provided, return the exercise next in order after the eID.
         Return the first exercise for training by tID otherwise.
         """
-        serializer = ExerciseQueryParamsParser(data=request.query_params)
+        serializer = api_s.ExerciseQueryParamsParser(data=request.query_params)
         serializer.is_valid(raise_exception=True)
         if 'eID' in serializer.validated_data:
-            exercise = Exercise.objects.filter(
+            exercise = main_m.Exercise.objects.filter(
                 id__gt=serializer.validated_data['eID'], training_id=serializer.validated_data['tID']
             ).first()
         else:
-            exercise = Exercise.objects.filter(training_id=serializer.validated_data['tID']).first()
+            exercise = main_m.Exercise.objects.filter(training_id=serializer.validated_data['tID']).first()
         if not exercise:
             return Response({'next': False})
-        last_finished_training = FinishedTraining.objects.filter(training_id=serializer.validated_data['tID']).first()
-        last_finished_exercise_sets = FinishedExerciseSet.objects.filter(training=last_finished_training, exercise=exercise).all()
+        last_finished_training = main_m.FinishedTraining.objects.filter(training_id=serializer.validated_data['tID']).first()
+        last_finished_exercise_sets = main_m.FinishedExerciseSet.objects.filter(training=last_finished_training, exercise=exercise).all()
         return Response({
             'next': True,
             'id': exercise.id, 
@@ -115,3 +115,15 @@ class FinishedExerciseViewSet(ViewSet):
                 {'set': x.set, 'weight': x.weight, 'repetitions': x.repetitions} for x in last_finished_exercise_sets
             ]
         })
+
+
+class FinishedTrainingViewSet(ViewSet):
+    permission_classes = (IsAuthenticated, )
+
+    def list(self, request):
+        """
+        Return all user finished trainings.
+        """
+        queryset = main_m.FinishedTraining.objects.filter(training__owner=request.user)
+        serializer = api_s.FinishedTrainingSerializer(queryset, many=True)
+        return Response(serializer.data)

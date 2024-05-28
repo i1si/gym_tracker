@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from main.models import CustomUser, Exercise, FinishedExerciseSet, Training
+from main.models import CustomUser, Exercise, FinishedExerciseSet, Training, FinishedTraining
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -65,3 +65,10 @@ class NewFinishedExerciseSerializer(serializers.Serializer):
 class ExerciseQueryParamsParser(serializers.Serializer):
     tID = serializers.IntegerField()
     eID = serializers.IntegerField(required=False)
+
+
+class FinishedTrainingSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = FinishedTraining
+        fields = ('training', 'started_at', 'finished_at', )

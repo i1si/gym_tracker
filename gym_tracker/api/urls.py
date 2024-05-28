@@ -8,6 +8,7 @@ router = routers.DefaultRouter()
 router.register(r'users', v.UserInfoViewSet, basename='user')
 router.register(r'trainings', v.TrainingViewSet, basename='last_training')
 router.register(r'exercises', v.FinishedExerciseViewSet, basename='exercises')
+router.register(r'ftrainings', v.FinishedTrainingViewSet, basename='ftrainings')
 
 urlpatterns = [
     path('', include(router.urls)),
