@@ -116,3 +116,22 @@ class FinishedExerciseSet(models.Model):
         verbose_name = 'Выполненный подход'
         verbose_name_plural = 'Выполненные подходы'
 
+    def __str__(self):
+        return f'{self.training} - {self.exercise} - {self.set}'
+
+
+class FinishedRunning(models.Model):
+    """
+    Completed run stats.
+    """
+    owner = models.ForeignKey(to=CustomUser, on_delete=models.CASCADE)
+    distance = models.PositiveIntegerField('Расстояние')
+    duration = models.PositiveIntegerField('Длительность')
+    finished_at = models.DateTimeField('Финиш', auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Выполненная пробежка'
+        verbose_name_plural = 'Выполненные пробежки'
+
+    def __str__(self):
+        return f'{self.owner} - {self.finished_at.date()}'

@@ -46,3 +46,9 @@ def training_view(request, training_id):
     if request.user == training.owner:
         return render(request, 'main/training.html', {'training': training})
     return redirect('trainings')
+
+
+def running_view(request):
+    if request.user.is_authenticated:
+        return render(request, 'main/running.html')
+    return redirect('login')

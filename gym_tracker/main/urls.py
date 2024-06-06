@@ -13,4 +13,5 @@ urlpatterns = [
     path('progress/', v.progress_view, name='progress'),
     path('trainings/', v.trainings_view, name='trainings'),
     path('trainings/<int:training_id>', v.training_view, name='training'),
+    path('running/', v.running_view, name='running'),
 ]

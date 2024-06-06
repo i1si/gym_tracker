@@ -127,3 +127,13 @@ class FinishedTrainingViewSet(ViewSet):
         queryset = main_m.FinishedTraining.objects.filter(training__owner=request.user)
         serializer = api_s.FinishedTrainingSerializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class FinishedRunningViewSet(ViewSet):
+    permission_classes = (IsAuthenticated, )
+
+    def create(self, request):
+        serializer = api_s.FinishedRunningSerialiser(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(owner=self.request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

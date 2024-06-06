@@ -1,0 +1,48 @@
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block title %}
+Пробежка
+{% endblock title %}
+
+{% block content %}
+
+<main class="container col-xl-10 col-xxl-8 px-4 py-5">
+	<div class="row justify-content-center py-5">
+		<div class="col-md-6 col-lg-5">
+			<h1 class="text-center">Пробежка</h1>
+			<div class="mt-4">
+				<div class="fs-1 fw-bold text-center mb-4" id="timer">00:00:00</div>
+				<div class="d-grid gap-2">
+					<button class="btn btn-outline-primary" type="button" id="startBtn">Старт</button>
+					<button class="btn btn-outline-danger disabled" type="button" id="finishBtn" data-bs-toggle="modal" data-bs-target="#runningModal">Финиш</button>
+				</div>
+			</div>
+			<script src="{% static 'main/scripts/timer.js' %}"></script>
+
+			<div class="modal fade" id="runningModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="runningModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-body">
+							<form>
+								{% csrf_token %}
+								<div class="mb-3">
+									<label for="distance" class="col-form-label">Дистанция</label>
+									<input type="text" class="form-control" id="distance">
+									<div id="validationError" class="invalid-feedback">
+									</div>
+								</div>
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary" onclick="sendRunningStats()">Завершить</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</main>
+
+{% endblock content %}
